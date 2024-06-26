@@ -1,5 +1,5 @@
 variable "stage_name" {
-  default = "dev2"
+  default = "dev23"
   type    = string
 }
 
