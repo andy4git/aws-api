@@ -11,7 +11,7 @@ provider "aws" {
   region = "ca-central-1"
 }
 
-resource "aws_api_gateway_rest_api" "pcoi-api" {
+resource "aws_api_gateway_rest_api" "pcoi_api" {
   name        = "pcoi-api"
   description = "This is an terraform API Gateway"
   endpoint_configuration {
@@ -21,20 +21,20 @@ resource "aws_api_gateway_rest_api" "pcoi-api" {
 
 resource "aws_api_gateway_authorizer" "pcoi_authorizer" {
   name                   = "pcoi_authorizer"
-  rest_api_id            = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id            = aws_api_gateway_rest_api.pcoi_api.id
   authorizer_uri         = data.aws_lambda_function.lambuda_authorizer.invoke_arn
   type                   = "TOKEN"
   identity_source        = "method.request.header.Authorization"
 }
 
 resource "aws_api_gateway_resource" "resource_consent" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
-  parent_id   = aws_api_gateway_rest_api.pcoi-api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
+  parent_id   = aws_api_gateway_rest_api.pcoi_api.root_resource_id
   path_part   = "Consent"
 }
 
 resource "aws_api_gateway_method" "method_consent_post" {
-  rest_api_id   = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id   = aws_api_gateway_rest_api.pcoi_api.id
   resource_id   = aws_api_gateway_resource.resource_consent.id
   http_method   = "POST"
   api_key_required = true
@@ -43,18 +43,18 @@ resource "aws_api_gateway_method" "method_consent_post" {
 }
 
 resource "aws_api_gateway_integration" "integration_consent_post" {
-  rest_api_id             = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id             = aws_api_gateway_rest_api.pcoi_api.id
   resource_id             = aws_api_gateway_resource.resource_consent.id
   http_method             = aws_api_gateway_method.method_consent_post.http_method
   integration_http_method = "POST"
   type                    = "HTTP"
   uri                     = var.backbone_url
   request_parameters = {
-    "integration.request.header.x-oag-apiname": "'eCunsult'"
-    "integration.request.header.x-oag-audit-enabled": "'true'"
-    "integration.request.header.x-oag-audit-ignore-failure": "'true'"
-    "integration.request.header.x-oag-scope": "'system/Bundle.write'"
-    "integration.request.header.x-oag-scope-2": "'system/Bundle.write'"
+    "integration.request.header.x-oag-apiname" = "'pcoi'"
+    "integration.request.header.x-oag-sign-token-enabled" = "'true'"
+    "integration.request.header.x-oag-audit-enabled" = "'true'"
+    "integration.request.header.x-oag-audit-ignore-failure" = "'true'"
+    "integration.request.header.x-oag-scope" = "'system/Bundle.write'"
   }
 
   request_templates = { 
@@ -63,7 +63,7 @@ resource "aws_api_gateway_integration" "integration_consent_post" {
 }
 
 resource "aws_api_gateway_method_response" "consent_post_response_200" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
   resource_id = aws_api_gateway_resource.resource_consent.id
   http_method = aws_api_gateway_method.method_consent_post.http_method
   status_code = "200"
@@ -78,7 +78,7 @@ resource "aws_api_gateway_method_response" "consent_post_response_200" {
 }
 
 resource "aws_api_gateway_method_response" "consent_post_response_400" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
   resource_id = aws_api_gateway_resource.resource_consent.id
   http_method = aws_api_gateway_method.method_consent_post.http_method
   status_code = "400"
@@ -93,7 +93,7 @@ resource "aws_api_gateway_method_response" "consent_post_response_400" {
 }
 
 resource "aws_api_gateway_method_response" "consent_post_response_500" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
   resource_id = aws_api_gateway_resource.resource_consent.id
   http_method = aws_api_gateway_method.method_consent_post.http_method
   status_code = "500"
@@ -109,7 +109,7 @@ resource "aws_api_gateway_method_response" "consent_post_response_500" {
 }
 
 resource "aws_api_gateway_integration_response" "consent_post_integration_response_200" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
   resource_id = aws_api_gateway_resource.resource_consent.id
   http_method = aws_api_gateway_method.method_consent_post.http_method
   status_code = aws_api_gateway_method_response.consent_post_response_200.status_code
@@ -126,7 +126,7 @@ resource "aws_api_gateway_integration_response" "consent_post_integration_respon
 }
 
 resource "aws_api_gateway_integration_response" "consent_post_integration_response_400" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
   resource_id = aws_api_gateway_resource.resource_consent.id
   http_method = aws_api_gateway_method.method_consent_post.http_method
   status_code = aws_api_gateway_method_response.consent_post_response_400.status_code
@@ -144,7 +144,7 @@ resource "aws_api_gateway_integration_response" "consent_post_integration_respon
 }
 
 resource "aws_api_gateway_integration_response" "consent_post_integration_response_500" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
   resource_id = aws_api_gateway_resource.resource_consent.id
   http_method = aws_api_gateway_method.method_consent_post.http_method
   status_code = aws_api_gateway_method_response.consent_post_response_500.status_code
@@ -167,12 +167,12 @@ resource "aws_api_gateway_deployment" "pcoi_deployment" {
     aws_api_gateway_integration.integration_consent_post,
   ]
 
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
 }
 
 resource "aws_api_gateway_stage" "pcoi_stage" {
   deployment_id = aws_api_gateway_deployment.pcoi_deployment.id
-  rest_api_id   = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id   = aws_api_gateway_rest_api.pcoi_api.id
   stage_name    = var.stage_name
   variables = {
     "api_name": "olis"
@@ -181,7 +181,7 @@ resource "aws_api_gateway_stage" "pcoi_stage" {
 }
 
 resource "aws_api_gateway_method_settings" "allMethodsSettings" {
-  rest_api_id = aws_api_gateway_rest_api.pcoi-api.id
+  rest_api_id = aws_api_gateway_rest_api.pcoi_api.id
   stage_name  = aws_api_gateway_stage.pcoi_stage.stage_name
   method_path = "*/*"
 
