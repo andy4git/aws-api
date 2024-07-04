@@ -1,5 +1,5 @@
 variable "stage_name" {
-  default = "dit0"
+  default = "dit099"
   type    = string
 }
 
@@ -9,6 +9,6 @@ variable "backbone_url" {
 }
 
 variable "lob_url" {
-  default = "http://localhost:8080"
+  default = "http://localhost:8080/dummy"
   type    = string
 }
