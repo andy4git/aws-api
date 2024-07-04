@@ -1,14 +1,14 @@
 variable "stage_name" {
-  default = "dev9"
+  default = "dit0"
   type    = string
 }
 
 variable "backbone_url" {
-  default = "https://consumer.dit.ehealthontario.ca/devops/sandbox/backbone"
+  default = "http://k8s-oagfarga-backbone-a03b7ea046-5ea3c894b1bc6d7c.elb.ca-central-1.amazonaws.com/backbone"
   type    = string
 }
 
 variable "lob_url" {
-  default = "http://dummy.apps.dev2.ecp.ehealthontario.ca"
+  default = "http://localhost:8080"
   type    = string
 }
